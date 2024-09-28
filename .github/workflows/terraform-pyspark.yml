@@ -33,15 +33,6 @@ jobs:
       run: |
           terraform init
 
-    - uses: trstringer/manual-approval@v1
-      with:
-        secret: ${{ github.TOKEN }}
-        approvers: lalelisealstad
-        minimum-approvals: 1
-        issue-title: "Deploying v1.0.0 to prod"
-        issue-body: "Review the terraform plan, then approve or deny the deployment of v1.0.0 to prod."
-        exclude-workflow-initiator-as-approver: false
-
     - name: Terraform apply
       run: |
         terraform apply
