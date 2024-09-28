@@ -25,22 +25,35 @@ jobs:
       with:
         project_id: "liqour-store-etl"
 
-    - name: Install Terraform
-      run: sudo apt-get install terraform
-
-    - name: Initialize Terraform
-      run: terraform init
-
-    - name: Apply Terraform
-      run: terraform apply -auto-approve
-
-    # Step to upload the PySpark job script from GitHub repo to the GCS bucket
-    - name: Upload PySpark job to GCS
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+          terraform_version: 1.5.7
+    - name: Terraform init and validate
       run: |
-        gsutil cp pyspark-job.py gs://liquor-store-data-bucket/main.py
+          terraform init
 
-    # Submit the PySpark job to Dataproc
-    - name: Submit PySpark Job
+    - uses: trstringer/manual-approval@v1
+      with:
+        secret: ${{ github.TOKEN }}
+        approvers: lalelisealstad
+        minimum-approvals: 1
+        issue-title: "Deploying v1.0.0 to prod"
+        issue-body: "Review the terraform plan, then approve or deny the deployment of v1.0.0 to prod."
+        exclude-workflow-initiator-as-approver: false
+
+    - name: Terraform apply
       run: |
-        gcloud dataproc jobs submit pyspark gs://liquor-store-data-bucket/main.py \
-          --cluster=liquor-store-dataproc-cluster --region=europe-west1
+        terraform apply
+
+
+ #   # Step to upload the PySpark job script from GitHub repo to the GCS bucket
+ #   - name: Upload PySpark job to GCS
+ #     run: |
+ #       gsutil cp pyspark-job.py gs://liquor-store-data-bucket/main.py
+#
+ #   # Submit the PySpark job to Dataproc
+ #   - name: Submit PySpark Job
+ #     run: |
+ #       gcloud dataproc jobs submit pyspark gs://liquor-store-data-bucket/main.py \
+ #         --cluster=liquor-store-dataproc-cluster --region=europe-west1
