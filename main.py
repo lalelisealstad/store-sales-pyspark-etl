@@ -4,7 +4,7 @@ from etl.transform import transform
 
 def main():
     # Path to the BigQuery connector JAR
-    bigquery_connector_path = 'spark-3.1-bigquery-0.41.0.jar'
+    bigquery_connector_path = 'gs://spark-lib/bigquery/spark-bigquery-latest.jar'
 
     # Start a PySpark session with BigQuery connector
     spark = SparkSession.builder \
