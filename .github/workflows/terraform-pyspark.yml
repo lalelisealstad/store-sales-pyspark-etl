@@ -1,0 +1,43 @@
+name: Deploy and Run PySpark Job on Dataproc
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: "liqour-store-etl"
+        service_account_key: ${{ secrets.GCP_SA_KEY }}  # Store GCP credentials as a secret
+
+    - name: Authenticate with Google Cloud
+      run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
+
+    - name: Install Terraform
+      run: sudo apt-get install terraform
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Apply Terraform
+      run: terraform apply -auto-approve
+
+    # Step to upload the PySpark job script from GitHub repo to the GCS bucket
+    - name: Upload PySpark job to GCS
+      run: |
+        gsutil cp main.py.py gs://liquor-store-data-bucket/main.py.py
+
+    # Submit the PySpark job to Dataproc
+    - name: Submit PySpark Job
+      run: |
+        gcloud dataproc jobs submit pyspark gs://liquor-store-data-bucket/main.py.py \
+          --cluster=liquor-store-dataproc-cluster --region=europe-west1

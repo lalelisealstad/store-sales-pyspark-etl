@@ -2,12 +2,7 @@
 
 Develop to do: 
 
-- develop extract and transform locally
-- add big query table create to tf a
-- develop load locally
-- add dataproc to terraform 
-- run job on data proc
-- use github actions to deploy when new changed in main
+- add biq query to tf, github actions and script 
 - big query analyse results examples
 
 - clean up repo
