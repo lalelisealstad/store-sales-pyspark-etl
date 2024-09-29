@@ -1,4 +1,5 @@
 from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession
 from pyspark.sql.types import * 
 from pyspark.sql.functions import round, col, abs, concat, lit
 from pyspark.sql import functions as F
@@ -36,7 +37,7 @@ def transform(df):
     df_filtered = df_filtered.withColumn('sale_dollars', abs(col('sale_dollars'))) \
                             .withColumn('bottles_sold', abs(col('bottles_sold')))
 
-    df_filtered = df_filtered.withColumn('cost_dollars', round(col('state_bottle_cost') * col('bottles_sold'), 2))
+    df_filtered = df_filtered.withColumn('cost_dollars',round(col('state_bottle_cost') * col('bottles_sold'), 2))
     df_filtered = df_filtered.withColumn('revenue_dollars', round(col('sale_dollars') - col('cost_dollars'), 2))
 
     df_filtered = df_filtered.withColumn('item_description', concat(col('item_description'), lit(' '), col('bottle_volume_ml'), lit('ml')))
@@ -53,43 +54,44 @@ def transform(df):
     return df_grouped
 
 
+
+
 def main():
+    # Path to the BigQuery connector JAR
+    bigquery_connector_path = 'gs://spark-lib/bigquery/spark-bigquery-latest.jar'
+
     # Start a PySpark session with BigQuery connector
     spark = SparkSession.builder \
         .appName('BigQuery Iowa Liquor Sales') \
+        .config('spark.jars', bigquery_connector_path) \
         .config('spark.sql.execution.arrow.pyspark.enabled', 'true') \
         .getOrCreate()
 
     # Set GCP project ID and dataset details
-    public_table = 'bigquery-public-data.iowa_liquor_sales.sales'
+    public_project_id = 'bigquery-public-data'
+    public_dataset = 'iowa_liquor_sales'
+    public_table = 'sales'
 
     # Read the BigQuery data into a DataFrame
     df = spark.read \
         .format('bigquery') \
+        .option('project', public_project_id) \
+        .option('dataset', public_dataset) \
         .option('table', public_table) \
         .load()
 
-    print('Dataframe extracted from BigQuery')
+
+    print('Dataframe extracted from big query')
+
     
     df_transformed = transform(df)
     
     print('Dataframe transformed')
     
-    # Display the transformed data
+    # load to big query
     df_transformed.show()
-
-    # # Specify your output BigQuery table path
-    # output_table = 'your-project-id.your-dataset.your-output-table'
-
-    # # Write the transformed data back to BigQuery
-    # df_transformed.write \
-    #     .format('bigquery') \
-    #     .option('table', output_table) \
-    #     .mode('overwrite') \
-    #     .save()
-
-    # print('Dataframe written to BigQuery')
-
+    
+    
     spark.stop()
 
 if __name__ == "__main__":

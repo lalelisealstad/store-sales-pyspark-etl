@@ -55,10 +55,10 @@ cloud dataproc workflow-templates add-job pyspark \
   --region us-central1
 
 
-
-gcloud dataproc workflow-templates instantiate liquor-etl-workflow \
-  --region us-central1
-
 gcloud compute networks subnets update default \
   --region us-central1 \
   --enable-private-ip-google-access
+
+
+gcloud dataproc workflow-templates instantiate liquor-etl-workflow \
+  --region us-central1
