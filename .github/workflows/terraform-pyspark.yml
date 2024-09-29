@@ -42,10 +42,10 @@ jobs:
     # Step to upload the PySpark job script from GitHub repo to the GCS bucket
     - name: Upload PySpark job to GCS
       run: |
-        gsutil cp main.py gs://liquor-store-data-bucket/main.py
+        gsutil cp main.py gs://liquor-store-bucket/main.py
 
     # Submit the PySpark job to Dataproc
     - name: Submit PySpark Job
       run: |
-        gcloud dataproc jobs submit pyspark gs://liquor-store-data-bucket/main.py \
-          --cluster=liquor-etl-workflow-cluster --region=us-central1
+        gcloud dataproc jobs submit pyspark gs://liquor-store-bucket/main.py \
+          --cluster=liquor-store-etl-workflow-cluster --region=us-central1
