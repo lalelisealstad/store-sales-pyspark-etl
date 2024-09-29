@@ -41,7 +41,7 @@ resource "google_dataproc_workflow_template" "template" {
           }
         }
         software_config {
-          image_version = "2.2-debian12"
+          # Default
         }
       }
     }
