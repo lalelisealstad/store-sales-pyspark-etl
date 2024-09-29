@@ -31,3 +31,34 @@ help business analyst figure a=out how to improve sales and revenue
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+
+
+
+gcloud dataproc workflow-templates set-managed-cluster liquor-etl-workflow \
+  --region us-central1 \
+  --cluster-name liquor-etl-workflow-jobs \
+  --zone us-central1-a \
+  --master-machine-type n1-standard-2 \
+  --master-boot-disk-type pd-balanced \
+  --master-boot-disk-size 50GB \
+  --num-workers 2 \
+  --worker-machine-type n1-standard-2 \
+  --worker-boot-disk-type pd-balanced \
+  --worker-boot-disk-size 50GB \
+  --max-idle 10m
+
+
+cloud dataproc workflow-templates add-job pyspark \
+  gs://liquor-store-data-bucket/script/main.py \
+  --step-id job-a722fda0 \
+  --workflow-template liquor-etl-workflow \
+  --region us-central1
+
+
+
+gcloud dataproc workflow-templates instantiate liquor-etl-workflow \
+  --region us-central1
+
+gcloud compute networks subnets update default \
+  --region us-central1 \
+  --enable-private-ip-google-access

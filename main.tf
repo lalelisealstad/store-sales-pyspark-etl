@@ -1,58 +1,57 @@
 provider "google" {
   project = "liqour-store-etl"
-  region  = "europe-west1"
+  region  = "us-central1"
 }
 
 # Create a GCS bucket
 resource "google_storage_bucket" "data_bucket" {
   name     = "liquor-store-data-bucket"
-  location = "EU"
+  location = "us-central1"  # Changed to be consistent with the region
 }
 
-# Create a Dataproc cluster
-resource "google_dataproc_cluster" "dataproc_cluster" {
-  name       = "liquor-store-dataproc-cluster"
-  region     = "europe-west1"
-  num_workers = 2
+# Create a Dataproc workflow template
+resource "google_dataproc_workflow_template" "template" {
+  name     = "liquor-etl-workflow"
+  location = "us-central1"
 
-  cluster_config {
-    master_config {
-      num_instances = 1
-      machine_type  = "n1-standard-1"
-    }
-    worker_config {
-      num_instances = 2
-      machine_type  = "n1-standard-1"
-    }
-
-    # Initialization actions to install BigQuery connector
-    initialization_actions {
-      executable_file = "gs://dataproc-initialization-actions/bigquery/connectors.sh"
+  placement {
+    managed_cluster {
+      cluster_name = "liquor-etl-workflow-cluster"
+      config {
+        gce_cluster_config {
+          zone = "us-central1-a"
+        }
+        master_config {
+          num_instances = 1
+          machine_type = "n1-standard-1"
+          disk_config {
+            boot_disk_type   = "pd-ssd"
+            boot_disk_size_gb = 20
+          }
+        }
+        worker_config {
+          num_instances = 3
+          machine_type = "n1-standard-2"
+          disk_config {
+            boot_disk_size_gb = 15
+            num_local_ssds    = 2
+          }
+        }
+        secondary_worker_config {
+          num_instances = 2
+        }
+        software_config {
+          image_version = "2.0.35-debian10"
+        }
+      }
     }
   }
-}
 
-
-
-
-# Create a BigQuery dataset
-resource "google_bigquery_dataset" "bq_dataset" {
-  dataset_id = "liquor_store_dataset"
-  location   = "EU"
-}
-
-# GCS bucket for storing the PySpark job code 
-resource "google_storage_bucket_object" "pyspark_job" {
-  name   = "main.py"
-  bucket = google_storage_bucket.data_bucket.name
-}
-
-
-
-resource "google_dataproc_job" "pyspark_job" {
-  region      = google_dataproc_cluster.dataproc_cluster.region
-  cluster     = google_dataproc_cluster.dataproc_cluster.name
-  pyspark_job {
-    main_python_file_uri = "gs://${google_storage_bucket.data_bucket.name}/main.py"
+  # PySpark Job in Dataproc Workflow
+  jobs {
+    step_id = "pyspark-job"
+    pyspark_job {
+      main_python_file_uri = "gs://${google_storage_bucket.data_bucket.name}/main.py"
+    }
   }
 }

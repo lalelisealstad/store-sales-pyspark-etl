@@ -17,9 +17,9 @@ jobs:
     - name: Authenticate with Google Cloud
       uses: google-github-actions/auth@v1
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}  # Use the secret for your service account key
+        credentials_json: ${{ secrets.GCP_SA_KEY }}  
 
-    # Set up Google Cloud SDK without specifying the service account key
+    # Set up Google Cloud SDK
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
@@ -28,23 +28,24 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-          terraform_version: 1.5.7
+        terraform_version: 1.5.7
+
     - name: Terraform init and validate
       run: |
-          terraform init
+        terraform init
+        terraform validate
 
     - name: Terraform apply
       run: |
-        terraform apply
+        terraform apply -auto-approve
 
+    # Step to upload the PySpark job script from GitHub repo to the GCS bucket
+    - name: Upload PySpark job to GCS
+      run: |
+        gsutil cp main.py gs://liquor-store-data-bucket/main.py
 
- #   # Step to upload the PySpark job script from GitHub repo to the GCS bucket
- #   - name: Upload PySpark job to GCS
- #     run: |
- #       gsutil cp pyspark-job.py gs://liquor-store-data-bucket/main.py
-#
- #   # Submit the PySpark job to Dataproc
- #   - name: Submit PySpark Job
- #     run: |
- #       gcloud dataproc jobs submit pyspark gs://liquor-store-data-bucket/main.py \
- #         --cluster=liquor-store-dataproc-cluster --region=europe-west1
+    # Submit the PySpark job to Dataproc
+    - name: Submit PySpark Job
+      run: |
+        gcloud dataproc jobs submit pyspark gs://liquor-store-data-bucket/main.py \
+          --cluster=liquor-etl-workflow-cluster --region=us-central1
