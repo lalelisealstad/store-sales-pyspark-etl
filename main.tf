@@ -41,7 +41,7 @@ resource "google_dataproc_workflow_template" "template" {
           }
         }
         software_config {
-          # Default
+          image_version = "2.0-debian10"
         }
       }
     }
@@ -52,7 +52,7 @@ resource "google_dataproc_workflow_template" "template" {
     step_id = "job-a722fda0"
     pyspark_job {
       main_python_file_uri = "gs://${google_storage_bucket.data_bucket.name}/main.py"
-      jar_file_uris = ["gs://spark-lib/bigquery/spark-bigquery-latest.jar"]
+      jar_file_uris = ["gs://spark-lib/bigquery/spark-bigquery-with-dependencies_2.12-0.41.0.jar"]
     }
   }
 }

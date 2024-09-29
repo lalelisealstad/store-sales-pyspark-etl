@@ -58,7 +58,7 @@ def transform(df):
 
 def main():
     # Path to the BigQuery connector JAR
-    bigquery_connector_path = 'gs://spark-lib/bigquery/spark-bigquery-latest.jar'
+    bigquery_connector_path = "gs://spark-lib/bigquery/spark-bigquery-with-dependencies_2.12-0.41.0.jar"
 
     # Start a PySpark session with BigQuery connector
     spark = SparkSession.builder \
