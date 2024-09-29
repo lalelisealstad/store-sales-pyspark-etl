@@ -57,11 +57,3 @@ resource "google_dataproc_workflow_template" "template" {
   }
 }
 
-# Update Google Cloud subnet for private IP access
-resource "google_compute_subnetwork" "default_subnetwork" {
-  name    = "default"
-  region  = "us-central1"
-  network = "default"
-
-  private_ip_google_access = true
-}

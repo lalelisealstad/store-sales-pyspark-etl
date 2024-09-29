@@ -62,3 +62,6 @@ gcloud compute networks subnets update default \
 
 gcloud dataproc workflow-templates instantiate liquor-etl-workflow \
   --region us-central1
+
+
+ gcloud dataproc workflow-templates delete liquor-store-etl-workflow   --region=us-central1
