@@ -85,12 +85,20 @@ def main():
 
     
     df_transformed = transform(df)
-    
+    try:
+        df_transformed = transform(df)
+        
+        print('Dataframe transformed')
+        
+        df_transformed.show()
+    except Exception as e:
+        
+        print("Transformation failed", e)
+        
+        raise
     print('Dataframe transformed')
     
-    # load to big query
-    df_transformed.show()
-    
+    # load to big query.....
     
     spark.stop()
 

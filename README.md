@@ -1,12 +1,12 @@
 # liqour-sales-spark-etl
 
 Develop to do: 
-
-- add biq query to tf, github actions and script 
-- big query analyse results examples
-
 - clean up repo
 - describe in readme file
+
+- add a linter to yml
+- add biq query to tf, github actions and script 
+- big query analyse results examples
 
 
 take data from: 
@@ -34,6 +34,9 @@ pip install -r requirements.txt
 
 
 
+
+
+# 
 gcloud dataproc workflow-templates set-managed-cluster liquor-etl-workflow \
   --region us-central1 \
   --cluster-name liquor-etl-workflow-jobs \

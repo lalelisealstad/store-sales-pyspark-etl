@@ -17,7 +17,7 @@ jobs:
     - name: Authenticate with Google Cloud
       uses: google-github-actions/auth@v1
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}  
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
 
     # Set up Google Cloud SDK
     - name: Set up Google Cloud SDK
@@ -35,17 +35,31 @@ jobs:
         terraform init
         terraform validate
 
-    - name: Terraform apply
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -out=plan.out
+      continue-on-error: true # Ensure the job continues even if no changes
+
+    # Conditional Terraform apply step based on the plan output
+    - name: Check if changes need to be applied
+      if: ${{ steps.plan.outcome == 'success' && steps.plan.conclusion == 'success' }}
       run: |
-        terraform apply -auto-approve
+        terraform apply -auto-approve plan.out
+
+    # Skip apply if no changes (plan success with no diffs)
+    - name: Skip apply if no changes
+      if: ${{ steps.plan.outcome != 'success' }}
+      run: echo "No changes to apply."
 
     # Step to upload the PySpark job script from GitHub repo to the GCS bucket
     - name: Upload PySpark job to GCS
+      if: ${{ steps.plan.conclusion == 'success' }}
       run: |
         gsutil cp main.py gs://liquor-store-bucket/main.py
 
     # Instantiate the Dataproc workflow template
     - name: Run Dataproc Workflow Template
+      if: ${{ steps.plan.conclusion == 'success' }}
       run: |
         gcloud dataproc workflow-templates instantiate liquor-store-etl-workflow \
           --region us-central1

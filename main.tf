@@ -13,6 +13,14 @@ resource "google_storage_bucket" "data_bucket" {
   }
 }
 
+# remote state management
+terraform {
+  backend "gcs" {
+    bucket = "liquor-store-terraform-state"
+    prefix = "terraform/state"
+  }
+}
+
 # Create a Dataproc workflow template
 resource "google_dataproc_workflow_template" "template" {
   name     = "liquor-store-etl-workflow"
