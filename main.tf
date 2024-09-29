@@ -27,17 +27,17 @@ resource "google_dataproc_workflow_template" "template" {
         }
         master_config {
           num_instances = 1
-          machine_type = "n1-standard-1"
+          machine_type = "n1-standard-2"  
           disk_config {
             boot_disk_type   = "pd-ssd"
-            boot_disk_size_gb = 20
+            boot_disk_size_gb = 30  
           }
         }
         worker_config {
           num_instances = 3
-          machine_type = "n1-standard-2"
+          machine_type = "n1-standard-2" 
           disk_config {
-            boot_disk_size_gb = 15
+            boot_disk_size_gb = 30  
             num_local_ssds    = 2
           }
         }
