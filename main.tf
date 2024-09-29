@@ -49,7 +49,7 @@ resource "google_dataproc_workflow_template" "template" {
 
           # Include the BigQuery connector using spark.jars
           properties = {
-            "spark.jars" = "gs://spark-lib/bigquery/spark-bigquery-latest.jar"
+            "spark:spark.jars" = "gs://spark-lib/bigquery/spark-bigquery-latest.jar"
           }
         }
       }
