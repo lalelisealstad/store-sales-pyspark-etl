@@ -44,8 +44,8 @@ jobs:
       run: |
         gsutil cp main.py gs://liquor-store-bucket/main.py
 
-    # Submit the PySpark job to Dataproc
-    - name: Submit PySpark Job
+    # Instantiate the Dataproc workflow template
+    - name: Run Dataproc Workflow Template
       run: |
-        gcloud dataproc jobs submit pyspark gs://liquor-store-bucket/main.py \
-          --cluster=liquor-store-etl-workflow-cluster --region=us-central1
+        gcloud dataproc workflow-templates instantiate liquor-store-etl-workflow \
+          --region us-central1
