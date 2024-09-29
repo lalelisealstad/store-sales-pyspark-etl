@@ -5,7 +5,7 @@ provider "google" {
 
 # Create a GCS bucket
 resource "google_storage_bucket" "data_bucket" {
-  name     = "liquor-store-data-bucket"
+  name     = "liquor-store-bucket"
   location = "us-central1"  # Changed to be consistent with the region
 }
 
