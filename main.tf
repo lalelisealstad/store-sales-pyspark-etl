@@ -15,12 +15,12 @@ resource "google_storage_bucket" "data_bucket" {
 
 # Create a Dataproc workflow template
 resource "google_dataproc_workflow_template" "template" {
-  name     = "liquor-etl-workflow"
+  name     = "liquor-store-etl-workflow"
   location = "us-central1"
 
   placement {
     managed_cluster {
-      cluster_name = "liquor-etl-workflow-jobs"
+      cluster_name = "liquor-store-etl-workflow-jobs"
       config {
         gce_cluster_config {
           zone = "us-central1-a"
