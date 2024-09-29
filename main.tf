@@ -6,7 +6,11 @@ provider "google" {
 # Create a GCS bucket
 resource "google_storage_bucket" "data_bucket" {
   name     = "liquor-store-bucket"
-  location = "us-central1"  # Changed to be consistent with the region
+  location = "us-central1"
+
+  lifecycle {
+    ignore_changes = [name]
+  }
 }
 
 # Create a Dataproc workflow template
