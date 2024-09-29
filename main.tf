@@ -46,6 +46,11 @@ resource "google_dataproc_workflow_template" "template" {
         }
         software_config {
           image_version = "2.0.35-debian10"
+
+          # Include the BigQuery connector using spark.jars
+          properties = {
+            "spark.jars" = "gs://spark-lib/bigquery/spark-bigquery-latest.jar"
+          }
         }
       }
     }

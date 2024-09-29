@@ -170,3 +170,4 @@ terraform.tfstate.backup
 .terraform/*
 spark-3.1-bigquery-0.41.0.jar
 test_data/bquxjob_3567bd65_1921a4602ae.csv
+.DS_Store
