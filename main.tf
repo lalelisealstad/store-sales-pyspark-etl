@@ -13,6 +13,15 @@ resource "google_storage_bucket" "data_bucket" {
   }
 }
 
+# Create GCS bucket for BigQuery temporary storage
+resource "google_storage_bucket" "temp_bucket" {
+  name     = "store-etl-121-temp-bucket"
+  location = "US"
+  storage_class = "STANDARD"
+  force_destroy = true  
+}
+
+
 # remote state management
 terraform {
   backend "gcs" {
@@ -70,7 +79,6 @@ resource "google_bigquery_dataset" "dataset" {
   friendly_name  = "Liquor Sales Dataset"
   description    = "Dataset for transformed liquor sales data"
   location       = "US"
-  deletion_protection = true
 }
 
 

@@ -88,6 +88,7 @@ def main():
         .appName('BigQuery Iowa Liquor Sales') \
         .config('spark.jars', bigquery_connector_path) \
         .config('spark.sql.execution.arrow.pyspark.enabled', 'true') \
+        .config("spark.hadoop.fs.gs.system.bucket", "store-etl-121-temp-bucket") \
         .getOrCreate()
 
     print("Extracting data from BigQuery...")
