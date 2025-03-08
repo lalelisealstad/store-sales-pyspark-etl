@@ -1,5 +1,5 @@
 provider "google" {
-  project = "liqour-store-etl"
+  project = "store-etl-121"
   region  = "us-central1"
 }
 
@@ -20,6 +20,7 @@ terraform {
     prefix = "terraform/state"
   }
 }
+
 
 # Create a Dataproc workflow template
 resource "google_dataproc_workflow_template" "template" {
@@ -54,7 +55,6 @@ resource "google_dataproc_workflow_template" "template" {
       }
     }
   }
-
   # PySpark Job in Dataproc Workflow
   jobs {
     step_id = "job-a722fda0"
@@ -64,4 +64,15 @@ resource "google_dataproc_workflow_template" "template" {
     }
   }
 }
+
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id     = "store_dw_output"
+  friendly_name  = "Liquor Sales Dataset"
+  description    = "Dataset for transformed liquor sales data"
+  location       = "US"
+  deletion_protection = true
+}
+
+
+
 

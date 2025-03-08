@@ -38,6 +38,7 @@ gsutil mb -l us-central1 gs://liquor-store-terraform-state
 - update subnet (?) private gcp access 
 - git push and yml runs terraform if file is changed, and run workflow template with pyspark job
 
+
 #### Run locally:
 ```
 $ python3 -m venv .venv
