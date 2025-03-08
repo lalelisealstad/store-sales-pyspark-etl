@@ -115,6 +115,7 @@ def main():
         df_limited.write \
             .format("bigquery") \
             .option("table", table_id) \
+            .option("temporaryGcsBucket", "store-etl-121-temp-bucket") \
             .mode("append") \
             .save()
 
