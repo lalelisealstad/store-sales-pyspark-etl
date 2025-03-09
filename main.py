@@ -36,7 +36,7 @@ def create_bq_table_if_not_exists():
 
 
 def transform(df): 
-    print('Start transforming DataFrame...')
+    print('Start transforming DataFrame')
     
     df_filtered = df.select([
         'store_name', 'category_name', 'item_description',
@@ -107,9 +107,9 @@ def main():
 
         create_bq_table_if_not_exists()
 
-        df_limited = df_transformed.limit(10)
+        df_limited = df_transformed.limit(11)
 
-        print("Writing first 10 rows to BigQuery...")
+        print("Writing to BigQuery")
 
         # Write the transformed and limited DataFrame to BigQuery
         df_limited.write \
@@ -119,7 +119,7 @@ def main():
             .mode("append") \
             .save()
 
-        print("Successfully written first 10 rows to BigQuery.")
+        print("Successfull load to BigQuery.")
 
     except Exception as e:
         print("Transformation or Load failed:", e)
